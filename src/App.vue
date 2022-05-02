@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>HI</v-main>
+    <v-main>{{ $t("message") }}</v-main>
   </v-app>
 </template>
 
