@@ -1,3 +1,12 @@
 {
-  "message": "hello i18n !!"
+  "message": "hello i18n !!",
+  "company": {
+    "hrName": "HR name",
+    "title": "Company name",
+    "city": "Company city",
+    "street": "Company street",
+    "defaultHrName": "Dear Hiring manager",
+    "position": "Position",
+    "inBigCity": "Company located in a big city"
+  }
 }

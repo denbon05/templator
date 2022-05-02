@@ -1,4 +1,6 @@
 const { defineConfig } = require("@vue/cli-service");
+const path = require("path");
+
 module.exports = defineConfig({
   transpileDependencies: ["vuetify"],
 
@@ -13,6 +15,15 @@ module.exports = defineConfig({
       localeDir: "locales",
       enableInSFC: false,
       enableBridge: false,
+    },
+  },
+
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+        "~": path.resolve(__dirname, "./public"),
+      },
     },
   },
 });
