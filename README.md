@@ -1,5 +1,7 @@
 # templator
 
+<p>Template engine for docs</p>
+
 ## Project setup
 ```
 npm install
