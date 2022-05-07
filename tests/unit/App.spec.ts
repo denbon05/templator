@@ -12,7 +12,6 @@ const defaultComponentData = {
 describe("report type page", () => {
   let wrapper: Wrapper<Vue>;
   let vuetify: Vuetify;
-  // const localVue = createLocalVue();
 
   beforeEach(() => {
     vuetify = new Vuetify();

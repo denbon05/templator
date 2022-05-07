@@ -1,5 +1,4 @@
 {
-  "message": "hello i18n !!",
   "company": {
     "hrName": "HR name",
     "title": "Company name",
@@ -7,6 +6,16 @@
     "street": "Company street",
     "defaultHrName": "Dear Hiring manager",
     "position": "Position",
+    "defaultPosition": "jr. Full Stack developer",
     "inBigCity": "Company located in a big city"
+  },
+
+  "localStorage": {
+    "saveTo": "Save to localStorage",
+    "loadFrom": "Load from localStorage"
+  },
+
+  "token": {
+    "add": "Add token"
   }
 }

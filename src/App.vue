@@ -2,13 +2,16 @@
   <v-app>
     <v-container fluid>
       <v-row justify="center">
-        <v-col cols="12" md="4" xxl="3"
+        <v-col cols="12" md="10" lg="3"
           ><aside>
-            <v-card class="mx-auto" max-width="344" outlined>
+            <v-card class="mx-auto" outlined>
               <v-list-item>
                 <v-list-item-title>{{ company.title }}</v-list-item-title>
               </v-list-item>
-              <v-list-item :key="key" v-for="{ key, type } in textFields">
+              <v-list-item
+                :key="`input_${key}`"
+                v-for="{ key, type } in keyWords"
+              >
                 <v-text-field
                   :label="$t(`company.${key}`)"
                   outlined
@@ -24,17 +27,47 @@
                   :label="$t('company.inBigCity')"
                 ></v-checkbox>
               </v-list-item>
+            </v-card></aside
+        ></v-col>
 
-              <v-card-actions>
-                <v-btn @click="saveCompanyData" outlined rounded text>
-                  Button
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </aside></v-col
-        >
-        <v-col cols="12" md="8" xxl="7"
-          ><v-main>{{ $t("message") }}</v-main></v-col
+        <v-col cols="12" md="11" lg="7" xxl="7"
+          ><v-main class="d-flex flex-column">
+            <section class="d-flex flex-wrap">
+              <div class="text-subtitle-1 mt-1">{{ $t("token.add") }}:</div>
+              <div>
+                <v-btn-toggle
+                  dense
+                  group
+                  class="mb-2 d-flex flex-wrap"
+                  v-model="toggle_exclusive"
+                >
+                  <v-btn
+                    small
+                    text
+                    :key="`token_${key}`"
+                    v-for="{ key } in keyWords"
+                  >
+                    {{ $t(`company.${key}`) }}
+                  </v-btn>
+                </v-btn-toggle>
+              </div>
+            </section>
+            <v-textarea
+              outlined
+              no-resize
+              hide-details
+              rows="15"
+              :value="template"
+            ></v-textarea>
+            <section class="mt-1">
+              <v-btn class="ma-2" color="warning" outlined>{{
+                $t("localStorage.saveTo")
+              }}</v-btn>
+              <v-btn class="ma-2" color="primary" outlined>{{
+                $t("localStorage.loadFrom")
+              }}</v-btn>
+            </section>
+          </v-main></v-col
         >
       </v-row>
     </v-container>
@@ -44,6 +77,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { omit } from "lodash";
+import Template from "@/Template";
 
 export default Vue.extend({
   name: "App",
@@ -54,12 +88,16 @@ export default Vue.extend({
       title: "",
       city: "",
       street: "",
+      position: "",
       isBigCity: false,
     },
+
+    toggle_exclusive: null,
+    template: "" as string | null,
   }),
 
   computed: {
-    textFields() {
+    keyWords() {
       return Object.entries(omit(this.company, "isBigCity")).map(([key]) => ({
         key,
         type: "text",
@@ -75,14 +113,13 @@ export default Vue.extend({
     },
   },
 
-  methods: {
-    saveCompanyData() {
-      console.log({ company: this.company });
-    },
-  },
+  methods: {},
 
   created() {
     this.company.hrName = this.$t("company.defaultHrName") as string;
+    this.company.position = this.$t("company.defaultPosition") as string;
+    const template = new Template();
+    this.template = template.load();
   },
 });
 </script>
