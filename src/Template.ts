@@ -1,4 +1,4 @@
-import type { ITemplate } from "./types";
+import type { ITemplate } from "./types/interfaces";
 
 export default class Template implements ITemplate {
   private data: string | null;

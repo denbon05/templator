@@ -15,6 +15,7 @@
                 <v-text-field
                   :label="$t(`company.${key}`)"
                   outlined
+                  :name="key"
                   size="small"
                   dense
                   :type="type"
@@ -39,7 +40,7 @@
                   dense
                   group
                   class="mb-2 d-flex flex-wrap"
-                  v-model="toggle_exclusive"
+                  v-model="selectedToken"
                 >
                   <v-btn
                     small
@@ -57,10 +58,12 @@
               no-resize
               hide-details
               rows="15"
+              name="template"
               :value="template"
+              v-model="template"
             ></v-textarea>
             <section class="mt-1">
-              <v-btn class="ma-2" color="warning" outlined>{{
+              <v-btn @click="save" class="ma-2" color="warning" outlined>{{
                 $t("localStorage.saveTo")
               }}</v-btn>
               <v-btn class="ma-2" color="primary" outlined>{{
@@ -91,17 +94,20 @@ export default Vue.extend({
       position: "",
       isBigCity: false,
     },
+    companyOptionsSelect: ["isBigCity"],
 
-    toggle_exclusive: null,
-    template: "" as string | null,
+    selectedToken: null,
+    template: "aaaaa" as string | null,
   }),
 
   computed: {
     keyWords() {
-      return Object.entries(omit(this.company, "isBigCity")).map(([key]) => ({
-        key,
-        type: "text",
-      }));
+      return Object.entries(omit(this.company, this.companyOptionsSelect)).map(
+        ([key]) => ({
+          key,
+          type: "text",
+        })
+      );
     },
 
     keyMapper() {
@@ -113,7 +119,12 @@ export default Vue.extend({
     },
   },
 
-  methods: {},
+  methods: {
+    save() {
+      console.log(this.template);
+      this.template += " bbbbbbb";
+    },
+  },
 
   created() {
     this.company.hrName = this.$t("company.defaultHrName") as string;
