@@ -25,7 +25,7 @@
               <v-list-item>
                 <v-checkbox
                   v-model="company.isBigCity"
-                  :label="$t('company.inBigCity')"
+                  :label="$t('company.isBigCity')"
                 ></v-checkbox>
               </v-list-item>
             </v-card></aside
@@ -39,11 +39,13 @@
                 <v-btn-toggle
                   dense
                   group
+                  id="tog"
                   class="mb-2 d-flex flex-wrap"
                   v-model="selectedToken"
                 >
                   <v-btn
                     small
+                    :id="`token_btn_${key}`"
                     text
                     :key="`token_${key}`"
                     v-for="{ key } in keyWords"
@@ -55,20 +57,36 @@
             </section>
             <v-textarea
               outlined
+              :readonly="!isEditorMode"
               no-resize
               hide-details
               rows="15"
               name="template"
-              :value="template"
-              v-model="template"
+              :value="template.getData()"
+              v-model="templateData"
             ></v-textarea>
             <section class="mt-1">
-              <v-btn @click="save" class="ma-2" color="warning" outlined>{{
-                $t("localStorage.saveTo")
-              }}</v-btn>
-              <v-btn class="ma-2" color="primary" outlined>{{
-                $t("localStorage.loadFrom")
-              }}</v-btn>
+              <v-btn
+                @click="switchEditorMode"
+                class="ma-2"
+                :color="btnVisibleColor"
+                outlined
+                >{{ $t("template.show") }}</v-btn
+              >
+              <v-btn
+                @click="saveTemplate"
+                class="ma-2"
+                color="warning"
+                outlined
+                >{{ $t("localStorage.saveTo") }}</v-btn
+              >
+              <v-btn
+                @click="loadTemplate"
+                class="ma-2"
+                color="primary"
+                outlined
+                >{{ $t("localStorage.loadFrom") }}</v-btn
+              >
             </section>
           </v-main></v-col
         >
@@ -80,14 +98,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { omit } from "lodash";
-import Template from "@/Template";
+import Template from "@/models/Template";
 
 export default Vue.extend({
   name: "App",
 
   data: () => ({
     company: {
-      hrName: "",
+      appealTo: "",
       title: "",
       city: "",
       street: "",
@@ -95,9 +113,10 @@ export default Vue.extend({
       isBigCity: false,
     },
     companyOptionsSelect: ["isBigCity"],
-
+    isEditorMode: true,
     selectedToken: null,
-    template: "aaaaa" as string | null,
+
+    template: new Template(),
   }),
 
   computed: {
@@ -117,20 +136,49 @@ export default Vue.extend({
         },
       });
     },
+
+    btnVisibleColor() {
+      return this.isEditorMode ? "secondary" : "success";
+    },
+
+    templateData: {
+      get() {
+        return this.template.getData();
+      },
+      set(value: string) {
+        this.template.setData(value);
+      },
+    },
   },
 
   methods: {
-    save() {
-      console.log(this.template);
-      this.template += " bbbbbbb";
+    switchEditorMode() {
+      this.isEditorMode = !this.isEditorMode;
+      this.template.switchTemplateMode();
+    },
+
+    loadTemplate() {
+      this.template.load();
+    },
+
+    saveTemplate() {
+      this.template.save();
+    },
+  },
+
+  watch: {
+    selectedToken(newBtnIdx, oldBtnIdx) {
+      const { template, keyWords } = this;
+      const { key: tokenKey } = keyWords[newBtnIdx ?? oldBtnIdx];
+
+      template.setToken(tokenKey);
     },
   },
 
   created() {
-    this.company.hrName = this.$t("company.defaultHrName") as string;
+    this.company.appealTo = this.$t("company.defaultAppealTo") as string;
     this.company.position = this.$t("company.defaultPosition") as string;
-    const template = new Template();
-    this.template = template.load();
+    this.template.setTokensData(this.company, "company");
   },
 });
 </script>

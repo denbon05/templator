@@ -1,13 +1,13 @@
 {
   "company": {
-    "hrName": "HR name",
+    "appealTo": "Appeal",
     "title": "Company name",
     "city": "Company city",
     "street": "Company street",
-    "defaultHrName": "Dear Hiring manager",
+    "defaultAppealTo": "Dear Hiring manager",
     "position": "Position",
     "defaultPosition": "jr. Full Stack developer",
-    "inBigCity": "Company located in a big city"
+    "isBigCity": "Company located in a big city"
   },
 
   "localStorage": {
@@ -17,5 +17,9 @@
 
   "token": {
     "add": "Add token"
+  },
+
+  "template": {
+    "show": "Visible"
   }
 }

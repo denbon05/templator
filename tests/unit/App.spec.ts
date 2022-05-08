@@ -16,7 +16,7 @@ describe("main component", () => {
   let vuetify: Vuetify;
   let textEditor: Wrapper<Vue>;
   const company = {
-    hrName: "Harry Gooding",
+    appealTo: "Harry Gooding",
     title: "Fantasy company",
     city: "Newerland",
     street: "77 Newerstreet",
@@ -39,34 +39,35 @@ describe("main component", () => {
 
   test("template", async () => {
     const templateTexts = [
-      "Dear",
-      "Company name is",
-      "Where company is located (city)",
-      "Company street",
-      "What position",
+      "Dear: ",
+      "Company name: ",
+      "Where company is located (city): ",
+      "Company street: ",
+      "What position: ",
     ];
+    const tokenKeys = companyKeysValues.map(([key]) =>
+      wrapper.vm.$data.template.formatToken(key)
+    );
 
-    companyKeysValues.forEach(([key, value], idx) => {
+    for (let idx = 0; idx < companyKeysValues.length; idx++) {
+      const [key, value] = companyKeysValues[idx];
       const companyInput = wrapper.find(`[name="${key}"]`);
       companyInput.setValue(value);
 
-      const tokenButtons = wrapper
-        .findAll("button")
-        .filter((w) =>
-          w.text().match(wrapper.vm.$t(`company.${key}`) as string)
-        );
-      tokenButtons.trigger("click");
-
       const prevTemplateData = (textEditor.element as HTMLInputElement).value;
       const templateContextItem = templateTexts[idx];
-      textEditor.setValue(`${prevTemplateData}\n${templateContextItem} `);
-    });
+      textEditor.setValue(`${prevTemplateData}\n${templateContextItem}`);
 
-    const expectedTemplate = companyKeysValues
-      .map(([, tokenValue], idx) => `${templateTexts[idx]} ${tokenValue}`)
+      await wrapper.find(`#token_btn_${key}`).trigger("click");
+    }
+
+    const expectedRawTemplate = tokenKeys
+      .map((tokenKey, idx) => `${templateTexts[idx]}${tokenKey}`)
       .join("\n");
-    const actualTemplate = (textEditor.element as HTMLInputElement).value;
+    const actualRawTemplate = (
+      textEditor.element as HTMLInputElement
+    ).value.trimStart();
 
-    expect(actualTemplate).toEqual(expectedTemplate);
+    expect(actualRawTemplate).toEqual(expectedRawTemplate);
   });
 });
