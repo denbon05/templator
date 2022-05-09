@@ -5,5 +5,5 @@ export interface ITemplate {
   getData(): string;
   setData(data: string);
   setTokensData<T>(data: T, mainKey: string);
-  formatToken(tokenKey: string, isTranslated: boolean): string;
+  // formatToken(tokenKey: string, isTranslated: boolean): string;
 }

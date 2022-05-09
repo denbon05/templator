@@ -39,7 +39,6 @@
                 <v-btn-toggle
                   dense
                   group
-                  id="tog"
                   class="mb-2 d-flex flex-wrap"
                   v-model="selectedToken"
                 >
@@ -116,7 +115,7 @@ export default Vue.extend({
     isEditorMode: true,
     selectedToken: null,
 
-    template: new Template(),
+    template: new Template("company"),
   }),
 
   computed: {
@@ -178,7 +177,7 @@ export default Vue.extend({
   created() {
     this.company.appealTo = this.$t("company.defaultAppealTo") as string;
     this.company.position = this.$t("company.defaultPosition") as string;
-    this.template.setTokensData(this.company, "company");
+    this.template.setTokensData(this.company);
   },
 });
 </script>

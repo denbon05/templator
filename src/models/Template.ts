@@ -2,22 +2,26 @@ import type { ITemplate } from "@/types/interfaces";
 import i18n from "../i18n";
 
 export default class Template implements ITemplate {
-  constructor(key = "template") {
+  constructor(tokenMainKey: string, key = "template") {
     this.key = key;
-    this.setDataFrom();
+    this.data = "";
+    this.isRowTemplate = true;
+    this.tokenMainKey = tokenMainKey;
+
+    this.setDataFromLocalStorage();
   }
 
-  private data = "";
-  private isRowTemplate = true;
+  private data: string;
+  private isRowTemplate: boolean;
   private key: string;
-  private tokenMainKey: string | undefined;
+  private tokenMainKey: string;
   private tokens: any;
   private getFormattedTemplate(): string {
     let formattedTemplate = this.data;
-    const { tokens, formatToken } = this;
+    const { tokens } = this;
 
     Object.entries(tokens).forEach(([tokenKey, tokenValue]) => {
-      const visibleTokenValue = formatToken(tokenKey);
+      const visibleTokenValue = this.formatToken(tokenKey);
       formattedTemplate = formattedTemplate.replaceAll(
         visibleTokenValue,
         tokenValue as string
@@ -26,19 +30,11 @@ export default class Template implements ITemplate {
 
     return formattedTemplate;
   }
-  // TODO separate logic to specific module
-  private setDataFrom(src = "localStorage") {
-    let templateData = "" as string | null;
-    switch (src) {
-      case "localStorage":
-        templateData = window.localStorage.getItem(this.key);
-        this.data = templateData ? JSON.parse(templateData) : "";
-        break;
-      default:
-        throw Error(`Can't load data from ${src}`);
-    }
+  private setDataFromLocalStorage() {
+    const templateData = window.localStorage.getItem(this.key);
+    this.data = templateData ? JSON.parse(templateData) : "";
   }
-  formatToken(key: string, isTranslated = true) {
+  private formatToken(key: string, isTranslated = true) {
     const tokenKey = isTranslated ? i18n.t(`${this.tokenMainKey}.${key}`) : key;
     return `*${tokenKey}*`.toUpperCase();
   }
@@ -59,21 +55,22 @@ export default class Template implements ITemplate {
   }
 
   save() {
-    console.log(this.data);
     const textData = JSON.stringify(this.data);
     window.localStorage.setItem(this.key, textData);
   }
 
   load() {
-    this.data = this.getData();
+    this.setDataFromLocalStorage();
   }
 
   setToken(tokenKey: string, isTranslated = true) {
     this.data = `${this.data}${this.formatToken(tokenKey, isTranslated)}`;
   }
 
-  setTokensData<T>(data: T, mainKey: string) {
+  setTokensData<T>(data: T, mainKey?: string) {
     this.tokens = data;
-    this.tokenMainKey = mainKey;
+    if (mainKey) {
+      this.tokenMainKey = mainKey;
+    }
   }
 }
